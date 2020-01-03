@@ -2,5 +2,20 @@ version: "3.7"
 services: 
   backend:
     build: ./backend
+    networks:
+      - my-network-name
+  frontend:
+    build: ./frontend
+    networks:
+      - my-network-name
+  nginx: 
+    image: nginx:latest
+    container_name: production_nginx
+    volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "8080:8080"
+      - 80:80
+    networks:
+      - my-network-name
+networks:
+  my-network-name:
