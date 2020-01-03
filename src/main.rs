@@ -6,7 +6,7 @@ extern crate chrono;
 
 use actix_session::{CookieSession, Session};
 use actix_web::{
-    http, middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder,
+    http, middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder, Result,
 };
 use dotenv::dotenv;
 use futures::future::{ready, Ready};
@@ -206,6 +206,11 @@ async fn sign_up(
     }
 }
 
+async fn react_index() -> Result<actix_files::NamedFile> {
+    Ok(actix_files::NamedFile::open("./public/index.html")?)
+}
+
+
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
@@ -221,22 +226,35 @@ async fn main() -> std::io::Result<()> {
             .data(pool.clone())
             .wrap(middleware::Logger::default())
             .wrap(CookieSession::signed(&[0; 32]).secure(false))
-            .service(web::resource("/sign/up").route(web::method(http::Method::POST).to(sign_up)))
-            .service(web::resource("/sign/in").route(web::method(http::Method::POST).to(sign_in)))
-            .service(web::resource("/tickets").route(web::method(http::Method::GET).to(tickets)))
             .service(
-                web::resource("/tickets/create")
-                    .route(web::method(http::Method::POST).to(create_ticket)),
+                web::scope("/api")
+                    .service(
+                        web::resource("/sign/up")
+                            .route(web::method(http::Method::POST).to(sign_up)),
+                    )
+                    .service(
+                        web::resource("/sign/in")
+                            .route(web::method(http::Method::POST).to(sign_in)),
+                    )
+                    .service(
+                        web::resource("/tickets").route(web::method(http::Method::GET).to(tickets)),
+                    )
+                    .service(
+                        web::resource("/tickets/create")
+                            .route(web::method(http::Method::POST).to(create_ticket)),
+                    )
+                    .service(
+                        web::resource("/tickets/{ticket}")
+                            .route(web::method(http::Method::GET).to(ticket))
+                            .route(web::method(http::Method::POST).to(answer_ticket)),
+                    )
+                    .service(
+                        web::resource("/password/update")
+                            .route(web::method(http::Method::POST).to(update_password)),
+                    ),
             )
-            .service(
-                web::resource("/tickets/{ticket}")
-                    .route(web::method(http::Method::GET).to(ticket))
-                    .route(web::method(http::Method::POST).to(answer_ticket)),
-            )
-            .service(
-                web::resource("/password/update")
-                    .route(web::method(http::Method::POST).to(update_password)),
-            )
+            .service(actix_files::Files::new("/public", "./public"))
+            .default_service(web::resource("").route(web::get().to(react_index)))
     };
     HttpServer::new(app).bind("0.0.0.0:8080")?.run().await
 }
