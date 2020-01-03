@@ -238,5 +238,5 @@ async fn main() -> std::io::Result<()> {
                     .route(web::method(http::Method::POST).to(update_password)),
             )
     };
-    HttpServer::new(app).bind("localhost:8080")?.run().await
+    HttpServer::new(app).bind("0.0.0.0:8080")?.run().await
 }

@@ -32,6 +32,8 @@ RUN RUSTFLAGS=-Clinker=musl-gcc cargo build --release --target=x86_64-unknown-li
 
 FROM alpine:latest
 
+RUN apk update && apk add libpq ca-certificates
+
 RUN addgroup -g 1000 open_course_platform
 
 RUN adduser -D -s /bin/sh -u 1000 -G open_course_platform open_course_platform
@@ -39,9 +41,12 @@ RUN adduser -D -s /bin/sh -u 1000 -G open_course_platform open_course_platform
 WORKDIR /home/open_course_platform/bin/
 
 COPY --from=cargo-build /usr/src/open_course_platform/target/x86_64-unknown-linux-musl/release/open_course_platform .
+COPY --from=cargo-build /usr/src/open_course_platform/.env .
 
 RUN chown open_course_platform:open_course_platform open_course_platform
 
 USER open_course_platform
+
+EXPOSE 8080
 
 CMD ["./open_course_platform"]
