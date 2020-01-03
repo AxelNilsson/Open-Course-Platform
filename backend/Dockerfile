@@ -32,7 +32,7 @@ RUN RUSTFLAGS=-Clinker=musl-gcc cargo build --release --target=x86_64-unknown-li
 
 FROM alpine:latest
 
-RUN apk update && apk add libpq ca-certificates
+RUN apk update && apk add libpq ca-certificates nginx
 
 RUN addgroup -g 1000 open_course_platform
 
@@ -42,6 +42,7 @@ WORKDIR /home/open_course_platform/bin/
 
 COPY --from=cargo-build /usr/src/open_course_platform/target/x86_64-unknown-linux-musl/release/open_course_platform .
 COPY --from=cargo-build /usr/src/open_course_platform/.env .
+COPY --from=cargo-build /usr/src/open_course_platform/public/ public/
 
 RUN chown open_course_platform:open_course_platform open_course_platform
 
