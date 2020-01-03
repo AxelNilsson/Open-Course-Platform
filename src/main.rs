@@ -21,7 +21,7 @@ use models::{NewTicketResponse, NewUser, Password, Ticket, TicketWithResponse};
 
 async fn update_password(
     item: web::Json<Password>,
-    pool: web::Data<database::MySQLPool>,
+    pool: web::Data<database::PgPool>,
     session: Session,
 ) -> PrettyResponse<String> {
     let mut json = item.into_inner();
@@ -58,7 +58,7 @@ struct TicketsPageData {
 }
 
 async fn tickets(
-    pool: web::Data<database::MySQLPool>,
+    pool: web::Data<database::PgPool>,
     session: Session,
 ) -> Result<PrettyResponse<TicketsPageData>, Error> {
     let username = session.get::<String>("username").unwrap().unwrap();
@@ -71,9 +71,9 @@ async fn tickets(
 }
 
 async fn ticket(
-    pool: web::Data<database::MySQLPool>,
+    pool: web::Data<database::PgPool>,
     session: Session,
-    info: web::Path<u64>,
+    info: web::Path<i32>,
 ) -> Result<PrettyResponse<TicketWithResponse>, Error> {
     let username = session.get::<String>("username").unwrap().unwrap();
     let ticket = web::block(move || database::get_ticket(&pool, username, *info)).await?;
@@ -90,9 +90,9 @@ struct AnswerTicket {
 }
 
 async fn answer_ticket(
-    pool: web::Data<database::MySQLPool>,
+    pool: web::Data<database::PgPool>,
     session: Session,
-    info: web::Path<u64>,
+    info: web::Path<i32>,
     item: web::Json<AnswerTicket>,
 ) -> Result<PrettyResponse<String>, Error> {
     println!("In here");
@@ -162,7 +162,7 @@ struct SignInUser {
 
 async fn sign_in(
     item: web::Json<SignInUser>,
-    pool: web::Data<database::MySQLPool>,
+    pool: web::Data<database::PgPool>,
     session: Session,
 ) -> PrettyResponse<String> {
     let json = item.into_inner();
@@ -187,7 +187,7 @@ async fn sign_in(
 
 async fn sign_up(
     item: web::Json<NewUser>,
-    pool: web::Data<database::MySQLPool>,
+    pool: web::Data<database::PgPool>,
     session: Session,
 ) -> PrettyResponse<String> {
     let mut json = item.into_inner();

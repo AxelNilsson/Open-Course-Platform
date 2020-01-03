@@ -1,1 +1,1 @@
-DROP TABLE `ticket_responses`;
+DROP TABLE ticket_responses

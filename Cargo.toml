@@ -18,4 +18,4 @@ futures = "0.3"
 dotenv = "0.15"
 bcrypt = "0.6"
 chrono = { version = "0.4", features = ["serde"] }
-diesel = { version = "1.4", features = ["mysql", "r2d2", "chrono"] }
+diesel = { version = "1.4", features = ["postgres", "r2d2", "chrono"] }

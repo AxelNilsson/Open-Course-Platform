@@ -1,8 +1,8 @@
 table! {
     ticket_responses (id) {
-        id -> Unsigned<Bigint>,
-        user_id -> Unsigned<Bigint>,
-        ticket_id -> Unsigned<Bigint>,
+        id -> Int4,
+        user_id -> Int4,
+        ticket_id -> Int4,
         text -> Text,
         created_at -> Timestamp,
     }
@@ -10,8 +10,8 @@ table! {
 
 table! {
     tickets (id) {
-        id -> Unsigned<Bigint>,
-        user_id -> Unsigned<Bigint>,
+        id -> Int4,
+        user_id -> Int4,
         name -> Varchar,
         is_solved -> Bool,
         created_at -> Timestamp,
@@ -20,7 +20,7 @@ table! {
 
 table! {
     users (id) {
-        id -> Unsigned<Bigint>,
+        id -> Int4,
         email -> Varchar,
         username -> Varchar,
         password -> Varchar,
