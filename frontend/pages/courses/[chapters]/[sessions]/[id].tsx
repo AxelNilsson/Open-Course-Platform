@@ -1,4 +1,6 @@
 import Markdown from 'react-markdown';
+import { useRouter } from 'next/router';
+import fetch from 'isomorphic-unfetch';
 
 import Container from "../../../../components/Container";
 import Row from "../../../../components/Row";
@@ -8,6 +10,8 @@ import Column from "../../../../components/Column";
 import Sidebar from "../../../../components/Sidebar";
 
 function Index() {
+    const router = useRouter();
+
     const style = {
         background: "#FFF",
         width: "100vw",
@@ -44,7 +48,7 @@ function Index() {
                             </Column>
                             <Column flex={7}>
                                 <div style={card}>
-                                    <h1 style={markdown}>Introduction to Programming</h1>
+                                    <h1 style={markdown}>{router.query.chapters} - {router.query.sessions} - {router.query.id}</h1>
                                     <div style={markdown}>
                                         <Markdown
                                             source={input}
@@ -72,5 +76,18 @@ function Index() {
         </>
     )
 };
+
+Index.getInitialProps = async function( context: any) {
+    const { chapters, sessions, id } = context.query;
+    const res = await fetch(`http://192.168.1.2:8080/api/${chapters}/${sessions}/${id}`);
+    const data = await res.json();
+  
+    console.log(`Show data fetched. Count: ${data.length}`);
+  
+    return {
+      shows: data.map((entry: any) => entry.show)
+    };
+  };
+  
 
 export default Index;
