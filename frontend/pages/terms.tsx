@@ -3,7 +3,7 @@ import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
 import Markdown from 'react-markdown';
 
-function About() {
+function Terms() {
     const style = {
         width: "100vw",
         minHeight: "100vh",
@@ -54,4 +54,4 @@ function About() {
     )
 };
 
-export default About;
+export default Terms;
