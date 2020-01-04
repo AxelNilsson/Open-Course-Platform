@@ -3,7 +3,7 @@ use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use chrono::prelude::*;
 
-use crate::schema::{users, tickets, ticket_responses};
+use crate::schema::{sessions_text, sessions, chapters, courses, users, tickets, ticket_responses};
 use serde_derive::Deserialize;
 
 
@@ -140,3 +140,88 @@ impl NewTicketResponse {
             .execute(conn)
     }
 }
+
+#[derive(Debug, Queryable, Serialize)]
+pub struct Course {
+    pub name: String,
+    pub description: String,
+    pub slug: String,
+    pub image_link: Option<String>,
+}
+
+impl Course {
+    pub fn all(conn: &PgConnection) -> Result<Vec<Course>, diesel::result::Error> {
+        courses::table
+        .filter(courses::published.eq(true))
+        .select((
+            courses::name,
+            courses::description,
+            courses::slug,
+            courses::image_link,
+        ))
+        .load::<Course>(conn)
+    }
+}
+
+#[derive(Debug, Queryable, Serialize)]
+pub struct Chapter {
+    pub name: String,
+    pub slug: String,
+}
+
+impl Chapter {
+    pub fn for_course(conn: &PgConnection, course: &str) -> Result<Vec<Chapter>, diesel::result::Error> {
+        chapters::table
+        .inner_join(courses::table)
+        .filter(courses::slug.eq(course))
+        .filter(courses::published.eq(true))
+        .filter(chapters::published.eq(true))
+        .select((
+            chapters::name,
+            chapters::slug,
+        ))
+        .load::<Chapter>(conn)
+    }
+}
+
+#[derive(Debug, Queryable, Serialize)]
+pub struct Session {
+    pub name: String,
+    pub slug: String,
+}
+
+impl Session {
+    pub fn for_chapter(conn: &PgConnection, _course: &str, chapter: &str) -> Result<Vec<Session>, diesel::result::Error> {
+        sessions::table
+        .inner_join(chapters::table)
+        .filter(chapters::slug.eq(chapter))
+        .filter(chapters::published.eq(true))
+        .filter(sessions::published.eq(true))
+        .select((
+            sessions::name,
+            sessions::slug,
+        ))
+        .load::<Session>(conn)
+    }
+}
+
+#[derive(Debug, Queryable, Serialize)]
+pub struct SessionText {
+    pub name: String,
+    pub text: String,
+}
+
+impl SessionText {
+    pub fn for_session(conn: &PgConnection, _course: &str, _chapter: &str, session: &str) -> Result<SessionText, diesel::result::Error> {
+        sessions_text::table
+        .inner_join(sessions::table)
+        .filter(sessions::slug.eq(session))
+        .filter(sessions::published.eq(true))
+        .select((
+            sessions::name,
+            sessions_text::text,
+        ))
+        .first::<SessionText>(conn)
+    }
+}
+

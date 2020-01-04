@@ -17,7 +17,7 @@ mod database;
 mod models;
 mod schema;
 
-use models::{NewTicketResponse, NewUser, Password, Ticket, TicketWithResponse};
+use models::{SessionText, Chapter, Course, NewTicketResponse, NewUser, Password, Ticket, TicketWithResponse};
 
 async fn update_password(
     item: web::Json<Password>,
@@ -206,10 +206,52 @@ async fn sign_up(
     }
 }
 
-async fn react_index() -> Result<actix_files::NamedFile> {
-    Ok(actix_files::NamedFile::open("./public/index.html")?)
+async fn courses(
+    pool: web::Data<database::PgPool>,
+) -> Result<PrettyResponse<Vec<Course>>, Error> {
+    let courses = web::block(move || database::get_all_courses(&pool)).await?;
+
+    Ok(PrettyResponse {
+        data: courses,
+        code: 123,
+    })
 }
 
+async fn course(
+    pool: web::Data<database::PgPool>,
+    info: web::Path<String>,
+) -> Result<PrettyResponse<Vec<Chapter>>, Error> {
+    let chapters = web::block(move || database::get_all_chapters_for_course(&pool, &info)).await?;
+
+    Ok(PrettyResponse {
+        data: chapters,
+        code: 123,
+    })
+}
+
+async fn chapter(
+    pool: web::Data<database::PgPool>,
+    info: web::Path<(String, String)>,
+) -> Result<PrettyResponse<Vec<models::Session>>, Error> {
+    let sessions = web::block(move || database::get_all_sessions_for_chapter(&pool, &info.0, &info.1)).await?;
+
+    Ok(PrettyResponse {
+        data: sessions,
+        code: 123,
+    })
+}
+
+async fn session(
+    pool: web::Data<database::PgPool>,
+    info: web::Path<(String, String, String)>,
+) -> Result<PrettyResponse<SessionText>, Error> {
+    let session = web::block(move || database::get_session_text_for_session(&pool, &info.0, &info.1, &info.2)).await?;
+
+    Ok(PrettyResponse {
+        data: session,
+        code: 123,
+    })
+}
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -251,10 +293,24 @@ async fn main() -> std::io::Result<()> {
                     .service(
                         web::resource("/password/update")
                             .route(web::method(http::Method::POST).to(update_password)),
+                    )
+                    .service(
+                        web::resource("/courses")
+                            .route(web::method(http::Method::GET).to(courses)),
+                    )
+                    .service(
+                        web::resource("/courses/{course}")
+                            .route(web::method(http::Method::GET).to(course)),
+                    )
+                    .service(
+                        web::resource("/courses/{course}/{chapter}")
+                            .route(web::method(http::Method::GET).to(chapter)),
+                    )
+                    .service(
+                        web::resource("/courses/{course}/{chapter}/{session}")
+                            .route(web::method(http::Method::GET).to(session)),
                     ),
-            )
-            .service(actix_files::Files::new("/public", "./public"))
-            .default_service(web::resource("").route(web::get().to(react_index)))
+                )
     };
     HttpServer::new(app).bind("0.0.0.0:8080")?.run().await
 }
