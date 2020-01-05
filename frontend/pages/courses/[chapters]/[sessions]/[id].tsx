@@ -79,7 +79,7 @@ function Index() {
 
 Index.getInitialProps = async function( context: any) {
     const { chapters, sessions, id } = context.query;
-    const res = await fetch(`http://192.168.1.2:8080/api/${chapters}/${sessions}/${id}`);
+    const res = await fetch(`http://192.168.1.2/api/${chapters}/${sessions}/${id}`);
     const data = await res.json();
   
     console.log(`Show data fetched. Count: ${data.length}`);
