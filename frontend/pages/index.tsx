@@ -1,3 +1,5 @@
+import fetch from 'isomorphic-unfetch';
+
 import Container from "../components/Container";
 import Row from "../components/Row";
 import Navigation from "../components/Navigation";
@@ -6,7 +8,7 @@ import Footer from "../components/Footer";
 import Column from "../components/Column";
 import SmallRoundCard from "../components/SmallRoundCard";
 
-function Index() {
+function Index(props: any) {
     return (
         <>
             <header>
@@ -14,10 +16,11 @@ function Index() {
                 <Container maxWidth={"1080px"}>
                     <Row>
                         <LargeRoundCard
-                            title="Introduction to Programming"
-                            tagline="We want to introduce programming to you in a intuitive way, giving you practical knowledge. After this short course you will be able to create websites just like this one."
-                            backgroundColor="#f9d9eb"
-                            image="/images/introduction-to-programming.png"
+                            title={props.banner_course.name}
+                            tagline={props.banner_course.description}
+                            backgroundColor={props.banner_course.color}
+                            image={props.banner_course.image_link}
+                            link={`/courses/${props.banner_course.slug}/${props.banner_course.chapter_slug}/${props.banner_course.session_slug}`}
                         />
                     </Row>
                 </Container>
@@ -25,24 +28,24 @@ function Index() {
             <main>
                 <Container maxWidth={"1080px"}>
                     <Row margin={"1em 0"}>
-                        <Column margin={"0 1em 0 0"}>
-                            <SmallRoundCard
-                                title="Linear Algebra"
-                                tagline="Linear algebra is fundamental in Computer Science but it's not taught for Computer Scientists. We want to change that. We need to combine our previous knowledge with new knowledge, giving you the tools to understand Linear Algebra."
-                                image="/images/linear-algebra.png"
-                                backgroundColor="#7fd6c2"
-                                link="/courses/linear-algebra"
-                            />
-                        </Column>
-                        <Column margin={"0 0 0 1em"}>
-                            <SmallRoundCard
-                                title="Calculus"
-                                tagline="There is so much content on Calculus online that it's hard to make sense of it all. This resource is all that you need for your Computer Science needs. Use technology to your advantage to really understand Calculus. Once and for all."
-                                image="/images/calculus.png"
-                                backgroundColor="#ecced6"
-                                link="/courses/calculus"
-                            />
-                        </Column>
+                        {props.courses.map((course: any, index: any) => {
+                            var margin = "0 0 0 1em"
+                            if ((index % 2) === 0) {
+                                margin = "0 1em 0 0"
+                            }
+                            return (
+                                <Column key={index} margin={margin}>
+                                    <SmallRoundCard
+                                        title={course.name}
+                                        tagline={course.description}
+                                        image={course.image_link}
+                                        backgroundColor={course.color}
+                                        link={`/courses/${course.slug}/${course.chapter_slug}/${course.session_slug}`}
+                                    />
+                                </Column>
+                            )
+                        }
+                        )}
                     </Row>
                 </Container>
             </main>
@@ -61,6 +64,21 @@ function Index() {
             </style>
         </>
     )
+};
+
+
+Index.getInitialProps = async function (context: any) {
+    const session_res = await fetch(`http://${process.env.host}/api/courses`);
+    const session_data = await session_res.json();
+
+    const banner_course = session_data.data[0];
+    session_data.data.shift();
+    const courses = session_data.data;
+
+    return {
+        banner_course: banner_course,
+        courses: courses,
+    };
 };
 
 export default Index;

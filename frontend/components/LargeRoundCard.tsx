@@ -67,7 +67,7 @@ function LargeRoundCard(props: any) {
                     <Column flex={3}>
                         <h1 style={headerStyle}>{props.title}</h1>
                         <p style={paragraphStyle}>{props.tagline}</p>
-                        <LearnMoreButton></LearnMoreButton>
+                        <LearnMoreButton link={props.link}></LearnMoreButton>
                     </Column>
                     <Column flex={7}>
                         <img

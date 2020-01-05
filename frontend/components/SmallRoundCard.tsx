@@ -9,7 +9,6 @@ function SmallRoundCard(props: any) {
 
     function toggleHover() {
         setHover(!hover)
-        console.log(hover)
     }
 
     var margin = "0"
@@ -83,8 +82,7 @@ function SmallRoundCard(props: any) {
                 onMouseLeave={toggleHover}
                 style={styles}
             >
-                >
-                    <Container>
+                <Container>
                     <Row>
                         <Row>
                             <img

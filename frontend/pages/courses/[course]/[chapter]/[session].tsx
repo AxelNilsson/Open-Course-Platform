@@ -85,7 +85,7 @@ function Index(props: any) {
 Index.getInitialProps = async function (context: any) {
     const { course, chapter, session } = context.query;
 
-    const session_res = await fetch(`http://192.168.1.2/api/courses/${course}/${chapter}/${session}`);
+    const session_res = await fetch(`http://${process.env.host}/api/courses/${course}/${chapter}/${session}`);
     const session_data = await session_res.json();
 
     return session_data.data;

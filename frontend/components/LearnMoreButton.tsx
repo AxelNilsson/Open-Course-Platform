@@ -3,7 +3,7 @@ import Link from "next/link";
 function LearnMoreButton(props: any) {
   return (
     <div>
-      <Link href="/courses/introduction-to-programming">
+      <Link href={props.link}>
         <a>
           <button className="learn-more">
             <span className="circle">
