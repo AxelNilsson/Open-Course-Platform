@@ -6,6 +6,7 @@ CREATE TABLE courses (
   image_link VARCHAR,
   published BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  color VARCHAR NOT NULL,
   UNIQUE(name),
   UNIQUE(slug)
 )

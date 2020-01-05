@@ -16,6 +16,8 @@ function Index() {
                         <LargeRoundCard
                             title="Introduction to Programming"
                             tagline="We want to introduce programming to you in a intuitive way, giving you practical knowledge. After this short course you will be able to create websites just like this one."
+                            backgroundColor="#f9d9eb"
+                            image="/images/introduction-to-programming.png"
                         />
                     </Row>
                 </Container>
@@ -27,7 +29,7 @@ function Index() {
                             <SmallRoundCard
                                 title="Linear Algebra"
                                 tagline="Linear algebra is fundamental in Computer Science but it's not taught for Computer Scientists. We want to change that. We need to combine our previous knowledge with new knowledge, giving you the tools to understand Linear Algebra."
-                                image="/linear-algebra.png"
+                                image="/images/linear-algebra.png"
                                 backgroundColor="#7fd6c2"
                                 link="/courses/linear-algebra"
                             />
@@ -36,7 +38,7 @@ function Index() {
                             <SmallRoundCard
                                 title="Calculus"
                                 tagline="There is so much content on Calculus online that it's hard to make sense of it all. This resource is all that you need for your Computer Science needs. Use technology to your advantage to really understand Calculus. Once and for all."
-                                image="/calculus.png"
+                                image="/images/calculus.png"
                                 backgroundColor="#ecced6"
                                 link="/courses/calculus"
                             />

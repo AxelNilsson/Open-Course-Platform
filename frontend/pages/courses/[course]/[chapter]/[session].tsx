@@ -1,5 +1,6 @@
 import Markdown from 'react-markdown';
 import fetch from 'isomorphic-unfetch';
+import { useRouter } from 'next/router';
 
 import Container from "../../../../components/Container";
 import Row from "../../../../components/Row";
@@ -9,6 +10,8 @@ import Column from "../../../../components/Column";
 import Sidebar from "../../../../components/Sidebar";
 
 function Index(props: any) {
+    const router = useRouter();
+
     const style = {
         background: "#FFF",
         width: "100vw",
@@ -40,6 +43,9 @@ function Index(props: any) {
                         <Row padding={"1em 0"}>
                             <Column flex={3}>
                                 <Sidebar
+                                    courseLink={router.query.course}
+                                    chapterLink={router.query.chapter}
+                                    sessionLink={router.query.session}
                                     course={props.course}
                                     no_chapters={props.no_chapters}
                                     no_sessions={props.no_sessions}
@@ -77,9 +83,9 @@ function Index(props: any) {
 };
 
 Index.getInitialProps = async function (context: any) {
-    const { chapters, sessions, id } = context.query;
+    const { course, chapter, session } = context.query;
 
-    const session_res = await fetch(`http://192.168.1.2/api/courses/${chapters}/${sessions}/${id}`);
+    const session_res = await fetch(`http://192.168.1.2/api/courses/${course}/${chapter}/${session}`);
     const session_data = await session_res.json();
 
     return session_data.data;

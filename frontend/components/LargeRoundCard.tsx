@@ -19,6 +19,11 @@ function LargeRoundCard(props: any) {
         width = props.width
     }
 
+    var backgroundColor = "#FFFFFF"
+    if (props.backgroundColor !== undefined) {
+        backgroundColor = props.backgroundColor
+    }
+
     const styles = {
         position: 'relative' as 'relative',
         display: 'inline-block',
@@ -29,7 +34,7 @@ function LargeRoundCard(props: any) {
         userSelect: 'none' as 'none',
         color: 'white',
         height: "400px",
-        backgroundColor: "#f9d9eb",
+        backgroundColor: backgroundColor,
         borderRadius: "18px",
     };
 
@@ -68,7 +73,7 @@ function LargeRoundCard(props: any) {
                         <img
                             style={imageStyle}
                             width="100%"
-                            src="/introduction-to-programming.png"
+                            src={props.image}
                         />
                     </Column>
                 </Row>

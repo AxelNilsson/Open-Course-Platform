@@ -160,19 +160,38 @@ pub struct Course {
     pub description: String,
     pub slug: String,
     pub image_link: Option<String>,
+    pub color: String,
+    pub chapter_slug: Option<String>,
+    pub session_slug: Option<String>,
 }
 
 impl Course {
     pub fn all(conn: &PgConnection) -> Result<Vec<Course>, diesel::result::Error> {
-        courses::table
+        let unsorted_courses = courses::table
+            .left_join(chapters::table)
+            .left_join(sessions::table.on(chapters::id.eq(sessions::chapter_id)))
             .filter(courses::published.eq(true))
             .select((
                 courses::name,
                 courses::description,
                 courses::slug,
                 courses::image_link,
+                courses::color,
+                chapters::slug.nullable(),
+                sessions::slug.nullable(),
             ))
-            .load::<Course>(conn)
+            .load::<Course>(conn)?;
+
+        let mut courses: Vec<Course> = vec![];
+        let mut course_name = "".to_string();
+
+        for course in unsorted_courses {
+            if course.name != course_name {
+                course_name = course.name.clone();
+                courses.push(course);
+            }
+        }
+        return Ok(courses);
     }
 }
 
@@ -256,25 +275,39 @@ impl SessionText {
             .filter(courses::published.eq(true))
             .filter(chapters::published.eq(true))
             .filter(sessions::published.eq(true))
-            .select((courses::name, chapters::name, chapters::slug, sessions::name, sessions::slug))
+            .select((
+                courses::name,
+                chapters::name,
+                chapters::slug,
+                sessions::name,
+                sessions::slug,
+            ))
             .load::<(String, String, String, String, String)>(conn)?;
 
         let mut chapter_name = "".to_string();
         let mut meta_data: Vec<SessionMetaData> = vec![];
         let mut course_name = "".to_string();
 
-
         let no_sessions = chapters_data.len();
         for chapter in chapters_data {
             course_name = chapter.0;
             if chapter_name == chapter.1 {
                 let length = meta_data.len();
-                meta_data[length - 1].sessions.push(Session{name: chapter.3, slug: chapter.4})
+                meta_data[length - 1].sessions.push(Session {
+                    name: chapter.3,
+                    slug: chapter.4,
+                })
             } else {
                 chapter_name = chapter.1.clone();
                 meta_data.push(SessionMetaData {
-                    chapter: Session{name: chapter.1, slug: chapter.2},
-                    sessions: vec![Session{name: chapter.3, slug: chapter.4}],
+                    chapter: Session {
+                        name: chapter.1,
+                        slug: chapter.2,
+                    },
+                    sessions: vec![Session {
+                        name: chapter.3,
+                        slug: chapter.4,
+                    }],
                 })
             }
         }

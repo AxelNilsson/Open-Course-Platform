@@ -18,6 +18,7 @@ table! {
         image_link -> Nullable<Varchar>,
         published -> Bool,
         created_at -> Timestamp,
+        color -> Varchar,
     }
 }
 

@@ -26,7 +26,7 @@ function SessionLink(props: any) {
 
     return (
         <>
-            <Link href="/">
+            <Link href={props.link}>
                 <a onMouseEnter={toggleHover}
                     onMouseLeave={toggleHover}
                     style={sessionTitle}>

@@ -46,20 +46,28 @@ function Sidebar(props: any) {
 
     return (
         <>
-            <h2 style={courseTitle}>{ props.course }</h2>
-            <h5 style={courseTagline}>{ props.no_chapters } chapters | { props.no_sessions } sessions</h5>
+            <h2 style={courseTitle}>{props.course}</h2>
+            <h5 style={courseTagline}>{props.no_chapters} chapters | {props.no_sessions} sessions</h5>
             <ol style={chapters}>
                 {props.chapters.map((chapter: any, chapterIndex: number) =>
                     <li key={chapterIndex}>
                         <h3 style={chapterStyle}>{chapter.chapter.name}</h3>
                         <ul style={sessions}>
-                            {chapter.sessions.map((session: any, sessionIndex: number) =>
-                                <li style={sessionStyle} key={sessionIndex}>
-                                    <SessionLink>
-                                        {session.name}
-                                    </SessionLink>
-                                    <p style={sessionTagline}>2 minutes</p>
-                                </li>
+                            {chapter.sessions.map((session: any, sessionIndex: number) => {
+                                const link = `/courses/${props.courseLink}/${chapter.chapter.slug}/${session.slug}`
+                                var match = false
+                                if (link === `/courses/${props.courseLink}/${props.chapterLink}/${props.sessionLink}`) {
+                                    match = true
+                                }
+                                return (
+                                    <li style={sessionStyle} key={sessionIndex}>
+                                        <SessionLink active={match} link={link}>
+                                            {session.name}
+                                        </SessionLink>
+                                        <p style={sessionTagline}>2 minutes</p>
+                                    </li>
+                                )
+                            }
                             )}
                         </ul>
                     </li>
