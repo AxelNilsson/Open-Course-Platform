@@ -221,8 +221,8 @@ impl Session {
 
 #[derive(Debug, Queryable, Serialize)]
 pub struct SessionMetaData {
-    chapter: String,
-    sessions: Vec<String>,
+    chapter: Session,
+    sessions: Vec<Session>,
 }
 
 #[derive(Debug, Queryable, Serialize)]
@@ -256,8 +256,8 @@ impl SessionText {
             .filter(courses::published.eq(true))
             .filter(chapters::published.eq(true))
             .filter(sessions::published.eq(true))
-            .select((courses::name, chapters::name, sessions::name))
-            .load::<(String, String, String)>(conn)?;
+            .select((courses::name, chapters::name, chapters::slug, sessions::name, sessions::slug))
+            .load::<(String, String, String, String, String)>(conn)?;
 
         let mut chapter_name = "".to_string();
         let mut meta_data: Vec<SessionMetaData> = vec![];
@@ -269,12 +269,12 @@ impl SessionText {
             course_name = chapter.0;
             if chapter_name == chapter.1 {
                 let length = meta_data.len();
-                meta_data[length - 1].sessions.push(chapter.2)
+                meta_data[length - 1].sessions.push(Session{name: chapter.3, slug: chapter.4})
             } else {
                 chapter_name = chapter.1.clone();
                 meta_data.push(SessionMetaData {
-                    chapter: chapter.1,
-                    sessions: vec![chapter.2],
+                    chapter: Session{name: chapter.1, slug: chapter.2},
+                    sessions: vec![Session{name: chapter.3, slug: chapter.4}],
                 })
             }
         }
