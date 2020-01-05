@@ -1,5 +1,4 @@
 import Markdown from 'react-markdown';
-import { useRouter } from 'next/router';
 import fetch from 'isomorphic-unfetch';
 
 import Container from "../../../../components/Container";
@@ -10,8 +9,6 @@ import Column from "../../../../components/Column";
 import Sidebar from "../../../../components/Sidebar";
 
 function Index(props: any) {
-    const router = useRouter();
-
     const style = {
         background: "#FFF",
         width: "100vw",
@@ -34,8 +31,6 @@ function Index(props: any) {
         color: '#424242',
     }
 
-    const input = "## Programming is very simple \n\nProgramming at its essence is very simple. What programming is, is just telling a computer what to do. Programming seems very foreign in the beginning due to the fact that we have built very pretty and intuative layers on top of our computers, which makes programming seem very complicated while it really is not. A computer is really good at making very easy operations many times and very fast. Due to the fact that a computer makes the operations so fast makes it seem like it's a magic machine compared to us, but at its core it is a very simple machine.\n\n\n## Making decisions\nA computer is really good at making decisions. Think of a computer standing at a road split. Based on what you send in to the computer, the computer is really good, and is really fast at making a decision here.\n\n## Abstraction\n\nA computer most likely seems very abstract and it doesn't make any sense to me to try to start at the ground up, because then it will take such a long time to make something useful with a computer. This would have been practical 30 years ago, but now, things have changed, and there are better ways to learn how to control a computer. So lets start with that. The goal of this course is to create a blog."
-
     return (
         <>
             <div style={style}>
@@ -44,11 +39,10 @@ function Index(props: any) {
                     <Container maxWidth={"1080px"}>
                         <Row padding={"1em 0"}>
                             <Column flex={3}>
-                                <Sidebar></Sidebar>
+                                <Sidebar chapters={props.chapters}></Sidebar>
                             </Column>
                             <Column flex={7}>
                                 <div style={card}>
-                                    <h1 style={markdown}>{props.name}</h1>
                                     <div style={markdown}>
                                         <Markdown
                                             source={props.text}
@@ -77,16 +71,18 @@ function Index(props: any) {
     )
 };
 
-Index.getInitialProps = async function( context: any ) {
+Index.getInitialProps = async function (context: any) {
     const { chapters, sessions, id } = context.query;
-    const res = await fetch(`http://192.168.1.2/api/courses/${chapters}/${sessions}/${id}`);
-    const data = await res.json();  
-  
+
+    const session_res = await fetch(`http://192.168.1.2/api/courses/${chapters}/${sessions}/${id}`);
+    const session_data = await session_res.json();
+
     return {
-      name: data.data.name,
-      text: data.data.text,
+        name: session_data.data.name,
+        text: session_data.data.text,
+        chapters : session_data.data.chapters,
     };
-  };
-  
+};
+
 
 export default Index;

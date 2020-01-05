@@ -1,14 +1,6 @@
-import Link from 'next/link';
-import { useState } from 'react';
 import SessionLink from './SessionLink';
 
-function Sidebar() {
-    const [hover, setHover] = useState(false);
-
-    function toggleHover() {
-        setHover(!hover)
-    }
-
+function Sidebar(props: any) {
     const courseTitle = {
         color: "#424242",
         fontSize: "24px",
@@ -57,57 +49,25 @@ function Sidebar() {
             <h2 style={courseTitle}>Introduction to Programming</h2>
             <h5 style={courseTagline}>3 Chapters | 6 sessions</h5>
             <ol style={chapters}>
-                <li>
-                    <h3 style={chapter}>Chapter 1</h3>
-                    <ul style={sessions}>
-                        <li style={session}>
-                            <SessionLink>
-                                Install Patterns in Illustrator
-                            </SessionLink>
-                            <p style={sessionTagline}>2 minutes</p>
-                        </li>
-                        <li style={session}>
-                            <SessionLink active>
-                                Pattern Making Basics
-                            </SessionLink>
-                            <p style={sessionTagline}>5 minutes</p>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <h3 style={chapter}>Chapter 2</h3>
-                    <ul style={sessions}>
-                        <li style={session}>
-                            <SessionLink>
-                                Install Patterns in Illustrator
-                            </SessionLink>
-                            <p style={sessionTagline}>2 minutes</p>
-                        </li>
-                        <li style={session}>
-                            <SessionLink>
-                                Pattern Making Basics
-                            </SessionLink>
-                            <p style={sessionTagline}>5 minutes</p>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <h3 style={chapter}>Chapter 3</h3>
-                    <ul style={sessions}>
-                        <li style={session}>
-                            <SessionLink>
-                                Install Patterns in Illustrator
-                            </SessionLink>
-                            <p style={sessionTagline}>2 minutes</p>
-                        </li>
-                        <li style={session}>
-                            <SessionLink>
-                                Pattern Making Basics
-                            </SessionLink>
-                            <p style={sessionTagline}>5 minutes</p>
-                        </li>
-                    </ul>
-                </li>
+                {props.chapters.map((chapter: any) =>
+                    <li>
+                        <h3 style={chapter}>Chapter 1</h3>
+                        <ul style={sessions}>
+                            <li style={session}>
+                                <SessionLink>
+                                    Install Patterns in Illustrator
+                                </SessionLink>
+                                <p style={sessionTagline}>2 minutes</p>
+                            </li>
+                            <li style={session}>
+                                <SessionLink active>
+                                    Pattern Making Basics
+                                </SessionLink>
+                                <p style={sessionTagline}>5 minutes</p>
+                            </li>
+                        </ul>
+                    </li>
+                )}
             </ol>
         </>
     )
