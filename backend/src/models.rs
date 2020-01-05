@@ -171,6 +171,8 @@ impl Course {
             .left_join(chapters::table)
             .left_join(sessions::table.on(chapters::id.eq(sessions::chapter_id)))
             .filter(courses::published.eq(true))
+            .filter(chapters::published.eq(true))
+            .filter(sessions::published.eq(true))
             .select((
                 courses::name,
                 courses::description,
