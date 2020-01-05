@@ -39,7 +39,12 @@ function Index(props: any) {
                     <Container maxWidth={"1080px"}>
                         <Row padding={"1em 0"}>
                             <Column flex={3}>
-                                <Sidebar chapters={props.chapters}></Sidebar>
+                                <Sidebar
+                                    course={props.course}
+                                    no_chapters={props.no_chapters}
+                                    no_sessions={props.no_sessions}
+                                    chapters={props.chapters}
+                                ></Sidebar>
                             </Column>
                             <Column flex={7}>
                                 <div style={card}>
@@ -77,11 +82,7 @@ Index.getInitialProps = async function (context: any) {
     const session_res = await fetch(`http://192.168.1.2/api/courses/${chapters}/${sessions}/${id}`);
     const session_data = await session_res.json();
 
-    return {
-        name: session_data.data.name,
-        text: session_data.data.text,
-        chapters : session_data.data.chapters,
-    };
+    return session_data.data;
 };
 
 

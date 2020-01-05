@@ -33,7 +33,7 @@ function Sidebar(props: any) {
     }
 
 
-    const session = {
+    const sessionStyle = {
         marginBottom: "8px",
     }
 
@@ -49,14 +49,14 @@ function Sidebar(props: any) {
             <h2 style={courseTitle}>{ props.course }</h2>
             <h5 style={courseTagline}>{ props.no_chapters } chapters | { props.no_sessions } sessions</h5>
             <ol style={chapters}>
-                {props.chapters.map((chapter: any) =>
-                    <li>
-                        <h3 style={chapterStyle}>{chapter.chapter}</h3>
+                {props.chapters.map((chapter: any, chapterIndex: number) =>
+                    <li key={chapterIndex}>
+                        <h3 style={chapterStyle}>{chapter.chapter.name}</h3>
                         <ul style={sessions}>
-                            {chapter.sessions.map((session: any) =>
-                                <li style={session}>
+                            {chapter.sessions.map((session: any, sessionIndex: number) =>
+                                <li style={sessionStyle} key={sessionIndex}>
                                     <SessionLink>
-                                        {session}
+                                        {session.name}
                                     </SessionLink>
                                     <p style={sessionTagline}>2 minutes</p>
                                 </li>
