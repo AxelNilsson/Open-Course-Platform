@@ -19,7 +19,7 @@ function Sidebar(props: any) {
     }
 
     const chapterStyle = {
-        fontWeight: 300,
+        fontWeight: 700,
         color: "#424242",
         marginTop: 0,
         marginBottom: "4px",
