@@ -5,7 +5,7 @@ import InternalLink from "../components/InternalLink";
 import H2 from "../components/H2";
 import TopRightButton from "../components/TopRightButton";
 
-function Navigation() {
+function Navigation(props: any) {
     return (
         <nav>
             <Container maxWidth={"1080px"}>
@@ -17,7 +17,7 @@ function Navigation() {
                         <Row justifyContent={"space-between"}>
                             <InternalLink color={"#424242"} link="/">Home</InternalLink>
                             <InternalLink color={"#424242"} link="/about">About</InternalLink>
-                            <TopRightButton link="/courses/introduction-to-programming">Get started</TopRightButton>
+                            <TopRightButton link={props.link}>Get started</TopRightButton>
                         </Row>
                     </Column>
                 </Row>

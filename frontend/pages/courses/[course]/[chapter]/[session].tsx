@@ -32,6 +32,8 @@ function Index(props: any) {
 
     const markdown = {
         color: '#424242',
+        width: "100%",
+        whiteSpace: "pre-wrap" as "pre-wrap",
     }
 
     return (
@@ -76,7 +78,10 @@ function Index(props: any) {
                     margin: 0;
                     padding: 0;
                 }
-                `}
+                pre {
+                    white-space: pre-wrap;
+                }
+`}
             </style>
         </>
     )

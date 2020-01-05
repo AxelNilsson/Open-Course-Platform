@@ -12,7 +12,7 @@ function Index(props: any) {
     return (
         <>
             <header>
-                <Navigation></Navigation>
+                <Navigation link={`/courses/${props.banner_course.slug}/${props.banner_course.chapter_slug}/${props.banner_course.session_slug}`}></Navigation>
                 <Container maxWidth={"1080px"}>
                     <Row>
                         <LargeRoundCard
