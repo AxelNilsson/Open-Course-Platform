@@ -229,6 +229,9 @@ pub struct SessionMetaData {
 pub struct SessionText {
     pub name: String,
     pub text: String,
+    pub course: String,
+    pub no_chapters: usize,
+    pub no_sessions: usize,
     pub chapters: Vec<SessionMetaData>,
 }
 
@@ -246,35 +249,44 @@ impl SessionText {
             .select((sessions::name, sessions_text::text))
             .first::<(String, String)>(conn)?;
 
-        let chapters = chapters::table
+        let chapters_data = chapters::table
             .inner_join(courses::table)
             .inner_join(sessions::table)
             .filter(courses::slug.eq(course))
             .filter(courses::published.eq(true))
             .filter(chapters::published.eq(true))
             .filter(sessions::published.eq(true))
-            .select((chapters::name, sessions::name))
-            .load::<(String, String)>(conn)?;
+            .select((courses::name, chapters::name, sessions::name))
+            .load::<(String, String, String)>(conn)?;
 
         let mut chapter_name = "".to_string();
         let mut meta_data: Vec<SessionMetaData> = vec![];
+        let mut course_name = "".to_string();
 
-        for chapter in chapters {
-            if chapter_name == chapter.0 {
+
+        let no_sessions = chapters_data.len();
+        for chapter in chapters_data {
+            course_name = chapter.0;
+            if chapter_name == chapter.1 {
                 let length = meta_data.len();
-                meta_data[length - 1].sessions.push(chapter.1)
+                meta_data[length - 1].sessions.push(chapter.2)
             } else {
-                chapter_name = chapter.0.clone();
+                chapter_name = chapter.1.clone();
                 meta_data.push(SessionMetaData {
-                    chapter: chapter.0,
-                    sessions: vec![chapter.1],
+                    chapter: chapter.1,
+                    sessions: vec![chapter.2],
                 })
             }
         }
 
+        let no_chapters = meta_data.len();
+
         return Ok(SessionText {
             name: name,
             text: text,
+            course: course_name,
+            no_chapters: no_chapters,
+            no_sessions: no_sessions,
             chapters: meta_data,
         });
     }

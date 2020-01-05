@@ -18,7 +18,7 @@ function Sidebar(props: any) {
         listStyle: "none",
     }
 
-    const chapter = {
+    const chapterStyle = {
         fontWeight: 300,
         color: "#424242",
         marginTop: 0,
@@ -46,25 +46,21 @@ function Sidebar(props: any) {
 
     return (
         <>
-            <h2 style={courseTitle}>Introduction to Programming</h2>
-            <h5 style={courseTagline}>3 Chapters | 6 sessions</h5>
+            <h2 style={courseTitle}>{ props.course }</h2>
+            <h5 style={courseTagline}>{ props.no_chapters } chapters | { props.no_sessions } sessions</h5>
             <ol style={chapters}>
                 {props.chapters.map((chapter: any) =>
                     <li>
-                        <h3 style={chapter}>Chapter 1</h3>
+                        <h3 style={chapterStyle}>{chapter.chapter}</h3>
                         <ul style={sessions}>
-                            <li style={session}>
-                                <SessionLink>
-                                    Install Patterns in Illustrator
-                                </SessionLink>
-                                <p style={sessionTagline}>2 minutes</p>
-                            </li>
-                            <li style={session}>
-                                <SessionLink active>
-                                    Pattern Making Basics
-                                </SessionLink>
-                                <p style={sessionTagline}>5 minutes</p>
-                            </li>
+                            {chapter.sessions.map((session: any) =>
+                                <li style={session}>
+                                    <SessionLink>
+                                        {session}
+                                    </SessionLink>
+                                    <p style={sessionTagline}>2 minutes</p>
+                                </li>
+                            )}
                         </ul>
                     </li>
                 )}
