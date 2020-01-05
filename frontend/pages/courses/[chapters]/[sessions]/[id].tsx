@@ -9,7 +9,7 @@ import Footer from "../../../../components/Footer";
 import Column from "../../../../components/Column";
 import Sidebar from "../../../../components/Sidebar";
 
-function Index() {
+function Index(props: any) {
     const router = useRouter();
 
     const style = {
@@ -48,10 +48,10 @@ function Index() {
                             </Column>
                             <Column flex={7}>
                                 <div style={card}>
-                                    <h1 style={markdown}>{router.query.chapters} - {router.query.sessions} - {router.query.id}</h1>
+                                    <h1 style={markdown}>{props.name}</h1>
                                     <div style={markdown}>
                                         <Markdown
-                                            source={input}
+                                            source={props.text}
                                         />
                                     </div>
                                 </div>
@@ -77,7 +77,7 @@ function Index() {
     )
 };
 
-Index.getInitialProps = async function( context: any) {
+Index.getInitialProps = async function( context: any ) {
     const { chapters, sessions, id } = context.query;
     const res = await fetch(`http://192.168.1.2/api/courses/${chapters}/${sessions}/${id}`);
     const data = await res.json();  
