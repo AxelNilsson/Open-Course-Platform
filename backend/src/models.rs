@@ -173,7 +173,6 @@ impl Course {
             .filter(courses::published.eq(true))
             .filter(chapters::published.eq(true))
             .filter(sessions::published.eq(true))
-            .order(chapters::id.asc())
             .select((
                 courses::name,
                 courses::description,
@@ -190,8 +189,16 @@ impl Course {
 
         for course in unsorted_courses {
             if course.name != course_name {
-                course_name = course.name.clone();
-                courses.push(course);
+                let mut course_exists = false;
+                for sorted_course in &courses {
+                    if course.name == sorted_course.name {
+                        course_exists = true
+                    }
+                }
+                if !course_exists {
+                    course_name = course.name.clone();
+                    courses.push(course);
+                }
             }
         }
         return Ok(courses);
