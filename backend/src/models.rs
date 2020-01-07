@@ -173,6 +173,7 @@ impl Course {
             .filter(courses::published.eq(true))
             .filter(chapters::published.eq(true))
             .filter(sessions::published.eq(true))
+            .order(chapters::id.asc())
             .select((
                 courses::name,
                 courses::description,
